@@ -1,4 +1,4 @@
-from db import create_product, update_product
+from db import create_product, update_product, create_category, update_category
 from exceptions import ValidationError
 
 
@@ -22,3 +22,16 @@ def deserialize_product(product_json, product_id=None, partial=False):
         return create_product(name, price, category_id)
     else:
         return update_product(product_id, name, price, category_id)
+
+
+def deserialize_category(category_json, category_id=None, partial=False):
+    name = category_json.get('name')
+    is_adult_only = category_json.get('is_adult_only')
+
+    if name is None and not partial:
+        raise ValidationError('Category name is required')
+
+    if category_id is None:
+        return create_category(name, is_adult_only)
+    else:
+        return update_category(category_id, name, is_adult_only)

@@ -46,6 +46,50 @@ class Product(Model):
         table_name = 'products'
 
 
+def get_category_by_name(name_filter=None):
+    # Get products by name
+    query = Category.select(Category).order_by(-Category.name)
+
+    if name_filter is not None:
+        query = query.where(Category.name == name_filter)
+
+    return query
+
+def get_category_by_id(id_filter=None):
+    # Get products by id
+    query = Category.select(Category).order_by(-Category.id)
+
+    if id_filter is not None:
+        query = query.where(Category.id == id_filter)
+
+    return query
+
+
+def create_category(name, is_adult_only):
+    # Create category and return category_name
+    return Category.create(name=name, is_adult_only=is_adult_only)
+
+
+def update_category(category_id, name, is_adult_only):
+    # Update category
+    category = Category.get_by_id(category_id)
+
+    if name is not None:
+        category.name = name
+
+    if is_adult_only is not None:
+        category.is_adult_only = is_adult_only
+
+    category.save()
+
+    return category
+
+
+def delete_category(category_id):
+    # Delete category
+    Category.delete().where(Category.id == category_id).execute()
+    return True
+
 def get_products(name_filter=None):
     # Get all products
     query = Product.select(
